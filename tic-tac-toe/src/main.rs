@@ -157,10 +157,6 @@ fn check_board(board: [char; 9], p_check: u8) -> bool
         }
     }
 
-    // 0 1 0
-    // 0 1 2
-    // 1 0 0
-
     // check for forward slash
     if (p_sum[0] > 0 && p_sum[1] > 0 && p_sum[2] > 0)
         && (p_sum[3] > 0 && p_sum[4] > 0 && p_sum[5] > 0)
