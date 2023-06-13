@@ -1,5 +1,8 @@
 use std::io::Write;
 
+const FOR_BOARD: [u8; 9] = [0, 0, 1, 0, 1, 0, 1, 0, 0]; // for case '/'
+const BACK_BOARD: [u8; 9] = [1, 0, 0, 0, 1, 0, 0, 0, 1]; // for case '\'
+
 fn main() -> ()
 {
     let mut running = main_menu();
@@ -63,17 +66,17 @@ fn game() -> ()
     display_board(board);
 
     winner = turns % 2;
-    if turns == 9
-    {
-        println!("Tie!\n");
-    }
-    else if winner == 1
+    if winner == 1
     {
         println!("Congratulations player 1, you win!\n");
     }
-    else
+    else if winner == 0
     {
         println!("Congratulations player 2, you win!\n");
+    }
+    else
+    {
+        println!("Tie!\n");
     }
 }
 
@@ -113,8 +116,10 @@ fn add_to_board(board: &mut [char; 9], slot: (usize, usize), turns: u8) -> ()
 fn check_board(board: [char; 9], p_check: u8) -> bool
 {
     let mut symbol = 'O';
-    let mut diag_score: u8 = 0;
+    let mut slot;
     let mut p_sum: [u8; 6] = [0; 6];
+    let mut for_diag_score: u8 = 0;
+    let mut back_diag_score: u8 = 0;
 
     if p_check % 2 == 0
     {
@@ -125,21 +130,18 @@ fn check_board(board: [char; 9], p_check: u8) -> bool
     {
         for col in 0..3
         {
-            if board[row * 3 + col] == symbol
+            slot = row * 3 + col;
+
+            if board[slot] == symbol
             {
                 p_sum[row] += 1;
                 p_sum[col + 3] += 1;
+
+                for_diag_score += FOR_BOARD[slot];
+                back_diag_score += BACK_BOARD[slot];
             }
         }
     }
-
-    println!("Player {} score:", p_check);
-    for i in 0..6
-    {
-        print!("{}, ", p_sum[i]);
-        std::io::stdout().flush().unwrap();
-    }
-    println!("");
 
     for row in 0..3
     {
@@ -157,11 +159,9 @@ fn check_board(board: [char; 9], p_check: u8) -> bool
         }
     }
 
-    // check for diagonal
-    if (p_sum[0] > 0 && p_sum[1] > 0 && p_sum[2] > 0)
-        && (p_sum[3] > 0 && p_sum[4] > 0 && p_sum[5] > 0)
+    if for_diag_score == 3 || back_diag_score == 3
     {
-        return true;
+        return true; // play filled diagonal
     }
 
     false // tie or board is not full
