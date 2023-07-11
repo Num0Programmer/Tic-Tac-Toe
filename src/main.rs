@@ -2,6 +2,7 @@ use std::io::Write;
 
 const FOR_BOARD: [u8; 9] = [0, 0, 1, 0, 1, 0, 1, 0, 0]; // for case '/'
 const BACK_BOARD: [u8; 9] = [1, 0, 0, 0, 1, 0, 0, 0, 1]; // for case '\'
+const EMPTY_SLOT: char = ' ';
 
 fn main() -> ()
 {
@@ -12,7 +13,6 @@ fn main() -> ()
         game();
         running = main_menu();
     }
-
     println!("Thanks for playing!");
 }
 
@@ -53,14 +53,16 @@ fn game() -> ()
     let mut result = false;
 
     let mut slot: (usize, usize);
-    let mut board = [' '; 9];
+    let mut board = [EMPTY_SLOT; 9];
 
     while !result && turns < 10
     {
         turns += 1;
         display_board(board);
-        slot = get_slot();
+
+        slot = slot_selection(&mut board);
         add_to_board(&mut board, slot, turns);
+
         result = check_board(board, turns);
     }
     display_board(board);
@@ -103,13 +105,17 @@ fn get_slot() -> (usize, usize)
 /// representation of a tic-tac-toe board
 fn add_to_board(board: &mut [char; 9], slot: (usize, usize), turns: u8) -> ()
 {
-    if turns % 2 == 1
+    let selected_slot: usize = slot.0 * 3 + slot.1;
+    let player_1_turn: bool = turns % 2 == 1;
+    
+
+    if player_1_turn
     {
-        board[slot.0 * 3 + slot.1] = 'O';
+        board[selected_slot] = 'O';
     }
     else
     {
-        board[slot.0 * 3 + slot.1] = 'X';
+        board[selected_slot] = 'X';
     }
 }
 
@@ -185,3 +191,29 @@ fn display_board(board: [char; 9]) -> ()
     println!(""); // create space
 }
 
+fn is_slot_empty(board: &mut [char; 9], slot: (usize, usize)) -> bool
+{
+    let selected_slot: usize = slot.0 * 3 + slot.1;
+
+    if board[selected_slot] == EMPTY_SLOT
+    {
+        return true;
+    }
+    return false;
+}
+
+fn slot_selection(board: &mut [char; 9]) -> (usize, usize)
+{
+
+    let mut slot: (usize, usize) = get_slot();
+    let mut is_empty: bool = is_slot_empty(board, slot);
+
+    while !is_empty
+    {
+        println!("This space has already been used!\n");
+        slot = get_slot();
+        is_empty = is_slot_empty(board, slot);
+    }
+
+    return slot;
+}
