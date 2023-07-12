@@ -17,13 +17,6 @@ fn main() -> ()
     println!("Thanks for playing!");
 }
 
-fn get_user_menu_input(selection: &mut String) -> ()
-{
-    std::io::stdout().flush().unwrap();
-
-    std::io::stdin().read_line( selection).unwrap();
-}
-
 // structs, enums, and functions dedicated to the main menu
 fn main_menu() -> bool
 {
@@ -35,6 +28,40 @@ fn main_menu() -> bool
     keep_running = input_user_selection(&mut selection);
 
     return keep_running
+}
+
+fn get_user_menu_input(selection: &mut String) -> ()
+{
+    std::io::stdout().flush().unwrap();
+
+    std::io::stdin().read_line( selection).unwrap();
+}
+
+fn print_menu() -> ()
+{
+    println!("");
+    println!("Tic Tac Toe");
+    println!("-----------");
+    println!("1) Play");
+    println!("2) Credits");
+    println!("3) Quit\n");
+    print!("> ");
+}
+
+fn input_user_selection(selection: &mut String) -> bool 
+{
+    match selection.trim()
+    {
+        "2" => {
+            println!("Credit to Num0Programmer");
+            return false
+        },
+        "3" => { return false },
+        &_ => {}
+    }
+    println!(""); // create space
+
+    true
 }
 
 // structs, enums, and functions dedicated to implementing the game
@@ -210,31 +237,4 @@ fn slot_selection(board: &mut [char; 9]) -> (usize, usize)
         is_empty = is_slot_empty(board, slot);
     }
     return slot;
-}
-
-fn print_menu() -> ()
-{
-    println!("");
-    println!("Tic Tac Toe");
-    println!("-----------");
-    println!("1) Play");
-    println!("2) Credits");
-    println!("3) Quit\n");
-    print!("> ");
-}
-
-fn input_user_selection(selection: &mut String) -> bool 
-{
-    match selection.trim()
-    {
-        "2" => {
-            println!("Credit to Num0Programmer");
-            return false
-        },
-        "3" => { return false },
-        &_ => {}
-    }
-    println!(""); // create space
-
-    true
 }
