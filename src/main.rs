@@ -6,6 +6,7 @@ const EMPTY_SLOT: char = ' ';
 
 fn main() -> ()
 {
+
     let mut running = main_menu();
 
     while running
@@ -16,39 +17,29 @@ fn main() -> ()
     println!("Thanks for playing!");
 }
 
+fn get_user_menu_input(selection: &mut String) -> ()
+{
+    std::io::stdout().flush().unwrap();
+
+    std::io::stdin().read_line( selection).unwrap();
+}
+
 // structs, enums, and functions dedicated to the main menu
 fn main_menu() -> bool
 {
     let mut selection = String::new();
+    let keep_running: bool;
 
-    println!("");
-    println!("Tic Tac Toe");
-    println!("-----------");
-    println!("1) Play");
-    println!("2) Credits");
-    println!("3) Quit\n");
-    print!("> ");
-    std::io::stdout().flush().unwrap();
+    print_menu();
+    get_user_menu_input(&mut selection);
+    keep_running = input_user_selection(&mut selection);
 
-    std::io::stdin().read_line(&mut selection).unwrap();
-    match selection.trim()
-    {
-        "2" => {
-            println!("Credit to Num0Programmer");
-            return false
-        },
-        "3" => { return false },
-        &_ => {}
-    }
-    println!(""); // create space
-
-    true
+    return keep_running
 }
 
 // structs, enums, and functions dedicated to implementing the game
 fn game() -> ()
 {
-    let winner: u8;
     let mut turns: u8 = 0;
     let mut result = false;
 
@@ -66,6 +57,12 @@ fn game() -> ()
         result = check_board(board, turns);
     }
     display_board(board);
+    check_winner(turns);
+}
+
+fn check_winner(turns: u8) ->()
+{
+    let winner: u8;
 
     winner = turns % 2;
     if winner == 1
@@ -107,7 +104,6 @@ fn add_to_board(board: &mut [char; 9], slot: (usize, usize), turns: u8) -> ()
 {
     let selected_slot: usize = slot.0 * 3 + slot.1;
     let player_1_turn: bool = turns % 2 == 1;
-    
 
     if player_1_turn
     {
@@ -204,7 +200,6 @@ fn is_slot_empty(board: &mut [char; 9], slot: (usize, usize)) -> bool
 
 fn slot_selection(board: &mut [char; 9]) -> (usize, usize)
 {
-
     let mut slot: (usize, usize) = get_slot();
     let mut is_empty: bool = is_slot_empty(board, slot);
 
@@ -214,6 +209,32 @@ fn slot_selection(board: &mut [char; 9]) -> (usize, usize)
         slot = get_slot();
         is_empty = is_slot_empty(board, slot);
     }
-
     return slot;
+}
+
+fn print_menu() -> ()
+{
+    println!("");
+    println!("Tic Tac Toe");
+    println!("-----------");
+    println!("1) Play");
+    println!("2) Credits");
+    println!("3) Quit\n");
+    print!("> ");
+}
+
+fn input_user_selection(selection: &mut String) -> bool 
+{
+    match selection.trim()
+    {
+        "2" => {
+            println!("Credit to Num0Programmer");
+            return false
+        },
+        "3" => { return false },
+        &_ => {}
+    }
+    println!(""); // create space
+
+    true
 }
