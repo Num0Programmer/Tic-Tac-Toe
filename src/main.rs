@@ -6,7 +6,6 @@ const EMPTY_SLOT: char = ' ';
 
 fn main() -> ()
 {
-
     let mut running = main_menu();
 
     while running
@@ -108,21 +107,86 @@ fn check_winner(turns: u8) ->()
 
 fn get_slot() -> (usize, usize)
 {
+    let mut valid_slot: bool = false;
+    let mut row_is_num: bool;
+    let mut col_is_num: bool;
+
     let mut row_idx = String::new();
     let mut col_idx = String::new();
 
-    print!("Please enter a row index (0 - 2): ");
-    std::io::stdout().flush().unwrap();
-    std::io::stdin().read_line(&mut row_idx).unwrap();
-    
-    print!("Please enter a column index (0 - 2): ");
-    std::io::stdout().flush().unwrap();
-    std::io::stdin().read_line(&mut col_idx).unwrap();
+    while !valid_slot
+    {
+        row_idx.clear();
+        col_idx.clear();
+
+        print!("Please enter a row index (0 - 2): ");
+        std::io::stdout().flush().unwrap();
+        std::io::stdin().read_line(&mut row_idx).unwrap();
+        
+        print!("Please enter a column index (0 - 2): ");
+        std::io::stdout().flush().unwrap();
+        std::io::stdin().read_line(&mut col_idx).unwrap();
+
+        row_is_num = str_is_number(&row_idx);
+        col_is_num = str_is_number(&col_idx);
+
+        if col_is_num && row_is_num
+        {
+            valid_slot = is_valid_slot(&row_idx, &col_idx);
+        }
+
+    }
 
     let row: usize = row_idx.trim().parse::<usize>().unwrap();
     let col: usize = col_idx.trim().parse::<usize>().unwrap();
 
     (row, col)
+}
+
+fn is_valid_slot(row_idx: &String, col_idx: &String) -> bool
+{
+
+    let row_index: usize = row_idx.trim().parse::<usize>().unwrap();
+    let col_index: usize = col_idx.trim().parse::<usize>().unwrap();
+
+    let valid_col_idx: bool = is_valid_idx(row_index);
+    let valid_row_idx: bool = is_valid_idx(col_index);
+
+    return valid_col_idx && valid_row_idx;
+}
+
+fn is_valid_idx(index: usize) -> bool
+{
+    // check if index is 0,1 or 2
+    for number in 0..3
+    {
+        if number == index
+        {
+            return true;
+        }
+    }
+            return false
+}
+
+fn str_is_number(str: &String) -> bool
+{
+    let mut index: usize = 0;
+    let mut is_num: bool;
+    let mut str_chars = str.chars();
+
+
+    while index < str.len() - 1
+    {
+        is_num = str_chars.next().unwrap().is_numeric();
+        
+        if !is_num 
+        {
+            return false;
+        }
+
+        index += 1;
+    }
+    return true;
 }
 
 // structs, enums, and functions dedicated to implementing the board
