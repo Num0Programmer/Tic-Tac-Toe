@@ -85,11 +85,11 @@ fn game() -> ()
     check_winner(turns, result);
 }
 
-fn check_winner(turns: u8, is_a_tie: bool) ->()
+fn check_winner(turns: u8, not_a_tie: bool) ->()
 {
     let winner: u8;
 
-    if !is_a_tie 
+    if !not_a_tie 
     {
         println!("Tie!\n")
     }
@@ -106,8 +106,6 @@ fn check_winner(turns: u8, is_a_tie: bool) ->()
             println!("Congratulations player 2, you win!\n");
         }
     }
-
-
 }
 
 fn get_slot() -> (usize, usize)
