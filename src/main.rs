@@ -32,7 +32,6 @@ fn main_menu() -> bool
 fn get_user_menu_input(selection: &mut String) -> ()
 {
     std::io::stdout().flush().unwrap();
-
     std::io::stdin().read_line( selection).unwrap();
 }
 
@@ -72,7 +71,7 @@ fn game() -> ()
     let mut slot: (usize, usize);
     let mut board = [EMPTY_SLOT; 9];
 
-    while !result && turns < 10
+    while !result && turns < 9
     {
         turns += 1;
         display_board(board);
@@ -83,26 +82,32 @@ fn game() -> ()
         result = check_board(board, turns);
     }
     display_board(board);
-    check_winner(turns);
+    check_winner(turns, result);
 }
 
-fn check_winner(turns: u8) ->()
+fn check_winner(turns: u8, is_a_tie: bool) ->()
 {
     let winner: u8;
 
-    winner = turns % 2;
-    if winner == 1
+    if !is_a_tie 
     {
-        println!("Congratulations player 1, you win!\n");
+        println!("Tie!\n")
     }
-    else if winner == 0
+
+    else 
     {
-        println!("Congratulations player 2, you win!\n");
+        winner = turns % 2;
+        if winner == 1
+        {
+            println!("Congratulations player 1, you win!\n");
+        }
+        else if winner == 0
+        {
+            println!("Congratulations player 2, you win!\n");
+        }
     }
-    else
-    {
-        println!("Tie!\n");
-    }
+
+
 }
 
 fn get_slot() -> (usize, usize)
@@ -135,6 +140,11 @@ fn get_slot() -> (usize, usize)
             valid_slot = is_valid_slot(&row_idx, &col_idx);
         }
 
+        if !valid_slot
+        {
+            println!();
+        }
+
     }
 
     let row: usize = row_idx.trim().parse::<usize>().unwrap();
@@ -165,7 +175,7 @@ fn is_valid_idx(index: usize) -> bool
             return true;
         }
     }
-            return false
+    return false
 }
 
 fn str_is_number(str: &String) -> bool
@@ -296,6 +306,7 @@ fn slot_selection(board: &mut [char; 9]) -> (usize, usize)
 
     while !is_empty
     {
+        println!("");
         println!("This space has already been used!\n");
         slot = get_slot();
         is_empty = is_slot_empty(board, slot);
